@@ -1,0 +1,14 @@
+# dependencies
+node_modules/
+
+# secrets — never commit the real key
+.env
+
+# build output
+dist/
+build/
+
+# logs / os
+*.log
+npm-debug.log*
+.DS_Store
