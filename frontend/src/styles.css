@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-paper text-ink antialiased;
+  }
+}
+
+@layer components {
+  /* chunky bordered card with a hard offset shadow */
+  .card-brutal {
+    @apply border-[3px] border-ink bg-white shadow-hard;
+  }
+  /* pressable neo-brutalist button */
+  .btn-brutal {
+    @apply inline-flex items-center justify-center gap-2 border-[3px] border-ink bg-brut-lime
+           font-mono text-sm font-bold uppercase tracking-wide text-ink shadow-hard
+           transition-all duration-100
+           hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-hard-lg
+           active:translate-x-[2px] active:translate-y-[2px] active:shadow-hard-sm
+           disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  /* small monospace label chip */
+  .chip-brutal {
+    @apply inline-flex items-center gap-2 border-[3px] border-ink bg-white px-3 py-1
+           font-mono text-xs font-bold uppercase tracking-wide shadow-hard-sm;
+  }
+}
+
+.scroll-thin::-webkit-scrollbar {
+  width: 10px;
+}
+.scroll-thin::-webkit-scrollbar-thumb {
+  background: #151312;
+  border: 2px solid #f7f3e9;
+}
