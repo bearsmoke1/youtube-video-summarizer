@@ -20,7 +20,7 @@ function buildPrompt(transcript, type) {
 }
 
 export async function generateSummary(transcript, type) {
-  // Truncate to keep cost/context in check ("approximate is fine" for a mini-project).
+  // Truncate to keep each request inside a predictable cost and context budget.
   const clipped = transcript.slice(0, config.transcriptCharLimit);
   const prompt = buildPrompt(clipped, type);
   return complete(prompt);

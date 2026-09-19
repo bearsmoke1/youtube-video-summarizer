@@ -4,8 +4,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-// Load app/.env for local runs (this file is app/backend/src/config.js).
-// In Docker the vars are injected by compose and this file simply won't exist — harmless.
+// Local runs: load the .env sitting at the project root (two levels up from backend/src/).
+// In Docker there is no .env — compose injects the vars, so dotenv simply finds nothing.
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 export const config = {
