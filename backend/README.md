@@ -41,12 +41,16 @@ The code is split so each file has one responsibility and one reason to change.
 | Service | `src/services/transcriptService.js` | Fetches the caption track and flattens it into one clean string. |
 | Service | `src/services/summarizerService.js` | Truncates the transcript and builds the short/detailed prompt. |
 | Client | `src/clients/llmClient.js` | The only file that talks to the model provider. Also implements mock mode. |
+| Client | `src/clients/transcriptApiClient.js` | Hosted transcript provider, used when the app runs where YouTube blocks caption requests. |
 | Utils | `src/utils/youtubeUtil.js` | Parses and validates every supported YouTube URL shape. |
 | Utils | `src/utils/errors.js` | Typed error classes, each carrying its HTTP status and user-facing message. |
 
 Two of these are deliberate isolation points:
 
-- **`transcriptService.js`** is the only file that knows which transcript library is in use.
+- **`transcriptService.js`** is the only file that knows where transcripts come from. It has two
+  interchangeable sources — YouTube's caption track directly (default, for local runs) and a
+  hosted provider (`TRANSCRIPT_PROVIDER=api`, for deployments, since YouTube blocks datacenter
+  IPs). Nothing above it changes when the source does.
 - **`llmClient.js`** is the only file that knows which model provider is in use. It speaks the
   OpenAI-compatible protocol, so switching providers is a base-URL and model-name change.
 

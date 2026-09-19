@@ -1,9 +1,21 @@
-// Fetches a video's transcript via the maintained `youtube-transcript` library.
-// This is the ONLY file that knows the transcript library — swap it here if needed.
+// Fetches a video's transcript. Two interchangeable sources, chosen by configuration:
+//
+//   library (default) — reads YouTube's caption track directly. Free, but only works from a
+//                       residential connection; YouTube blocks datacenter IP ranges.
+//   api               — a hosted transcript provider, for deployments on cloud hosts.
+//
+// This is the ONLY file that knows where transcripts come from; nothing above it changes.
 import { YoutubeTranscript } from 'youtube-transcript';
+import { config } from '../config.js';
+import { fetchTranscriptFromApi } from '../clients/transcriptApiClient.js';
 import { NoCaptionsError, TranscriptError } from '../utils/errors.js';
 
 export async function fetchTranscript(videoId) {
+  if (config.transcript.provider === 'api') return fetchTranscriptFromApi(videoId);
+  return fetchTranscriptFromYouTube(videoId);
+}
+
+async function fetchTranscriptFromYouTube(videoId) {
   let items;
   try {
     items = await YoutubeTranscript.fetchTranscript(videoId);
@@ -18,7 +30,7 @@ export async function fetchTranscript(videoId) {
     ) {
       // NOTE: the library can't always tell a real "no captions" from an IP block
       // (YouTube blocks datacenter/cloud IPs). On a normal/home connection this is
-      // almost always a genuine no-captions case.
+      // almost always a genuine no-captions case; on a server, set TRANSCRIPT_PROVIDER=api.
       throw new NoCaptionsError();
     }
     console.error('[transcript] fetch failed:', err && err.message);

@@ -18,7 +18,22 @@ export const config = {
     baseURL: process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com',
   },
   transcriptCharLimit: parseInt(process.env.TRANSCRIPT_CHAR_LIMIT || '12000', 10),
+  transcript: {
+    // 'library' reads YouTube directly (works from a home connection); 'api' uses a hosted
+    // provider (needed on cloud hosts, whose IPs YouTube blocks). Defaults to whichever the
+    // environment can actually support: a key present means a deployment that needs the API.
+    provider: (process.env.TRANSCRIPT_PROVIDER || (process.env.SUPADATA_API_KEY ? 'api' : 'library')).toLowerCase(),
+    apiKey: process.env.SUPADATA_API_KEY || '',
+    baseUrl: process.env.SUPADATA_BASE_URL || 'https://api.supadata.ai/v1',
+  },
 };
+
+if (config.transcript.provider === 'api' && !config.transcript.apiKey) {
+  console.warn(
+    '[config] TRANSCRIPT_PROVIDER is "api" but SUPADATA_API_KEY is not set — ' +
+      'transcript lookups will fail until a key is provided.'
+  );
+}
 
 // Fail loud early (but don't crash) if we can't summarize and aren't mocking.
 if (!config.mock && !config.deepseek.apiKey) {

@@ -168,11 +168,20 @@ The server listens on `$PORT` (default `4000`), so it drops straight into any co
 `render.yaml` is a ready-made [Render](https://render.com) Blueprint for exactly this image;
 set `DEEPSEEK_API_KEY` in the host's environment — never in the repository.
 
-**One caveat worth knowing before deploying:** YouTube restricts caption requests coming from
-datacenter IP ranges, which is where most cloud hosts live. The app runs fine there, but
-transcript fetching may fail for some or all videos. Running from an ordinary residential
-connection is the reliable path; a hosted transcript provider is the alternative if the app must
-live in the cloud.
+### Transcripts when deployed
+
+YouTube refuses caption requests from datacenter IP ranges, which is where cloud hosts live — so
+a deployed instance cannot read caption tracks the way a local run does. The app therefore
+supports two interchangeable transcript sources, selected by configuration:
+
+| `TRANSCRIPT_PROVIDER` | Source | Use |
+|---|---|---|
+| `library` *(default)* | Reads YouTube's caption track directly | Local runs, home connection |
+| `api` | A hosted transcript provider ([Supadata](https://supadata.ai)) | Deployed instances |
+
+Set `SUPADATA_API_KEY` and the app switches to the API automatically — no other change. Only
+existing captions are requested (`mode=native`), so a summary costs one credit and videos without
+captions still report exactly that.
 
 ---
 

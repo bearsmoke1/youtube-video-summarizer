@@ -20,3 +20,9 @@ services:
         value: "false"
       - key: TRANSCRIPT_CHAR_LIMIT
         value: "12000"
+      # Cloud hosts cannot read YouTube captions directly (datacenter IPs are blocked), so a
+      # deployed instance fetches transcripts through a hosted provider instead.
+      - key: TRANSCRIPT_PROVIDER
+        value: api
+      - key: SUPADATA_API_KEY
+        sync: false
