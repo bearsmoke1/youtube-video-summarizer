@@ -8,5 +8,5 @@ RUN npm install
 COPY . .
 
 EXPOSE 5173
-# P0/dev: run the Vite dev server. P6 may switch to a production build + preview.
+# Runs the Vite dev server; swap for a production build + preview if deploying.
 CMD ["npm", "run", "dev"]
