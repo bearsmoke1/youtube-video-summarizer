@@ -152,6 +152,30 @@ Each folder has its own README describing how that side is put together.
 
 ---
 
+## Deployment
+
+The `docker-compose.yml` setup is for development: two containers, with Vite's dev server
+proxying `/api` to the API. For deployment there is a single production image instead —
+`Dockerfile` at the repository root builds the web UI and copies it into the API image, which
+serves it as static files. One container, one port, one origin, no CORS.
+
+```bash
+docker build -t yt-summarizer .
+docker run -p 4000:4000 --env-file .env yt-summarizer      # http://localhost:4000
+```
+
+The server listens on `$PORT` (default `4000`), so it drops straight into any container host.
+`render.yaml` is a ready-made [Render](https://render.com) Blueprint for exactly this image;
+set `DEEPSEEK_API_KEY` in the host's environment — never in the repository.
+
+**One caveat worth knowing before deploying:** YouTube restricts caption requests coming from
+datacenter IP ranges, which is where most cloud hosts live. The app runs fine there, but
+transcript fetching may fail for some or all videos. Running from an ordinary residential
+connection is the reliable path; a hosted transcript provider is the alternative if the app must
+live in the cloud.
+
+---
+
 ## Notes and limits
 
 - Only videos **with captions** can be summarized; the audio itself is never transcribed.

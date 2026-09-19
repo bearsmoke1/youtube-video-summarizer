@@ -1,0 +1,22 @@
+# Render Blueprint — one web service running the production Dockerfile
+# (the built web UI is served by the API, so a single service covers the whole app).
+services:
+  - name: youtube-video-summarizer
+    type: web
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      # Set this in the Render dashboard — it is never stored in the repository.
+      - key: DEEPSEEK_API_KEY
+        sync: false
+      - key: DEEPSEEK_MODEL
+        value: deepseek-chat
+      - key: DEEPSEEK_BASE_URL
+        value: https://api.deepseek.com
+      - key: MOCK
+        value: "false"
+      - key: TRANSCRIPT_CHAR_LIMIT
+        value: "12000"
